@@ -1,0 +1,29 @@
+class Solution:
+    def oddEvenJumps(self, arr):
+        n = len(arr)
+        odd = [False] * n
+        even = [False] * n
+        odd[-1] = even[-1] = True
+
+        def make_stack(indexes):
+            res = [None] * n
+            stack = []
+            for i in indexes:
+                while stack and i > stack[-1]:
+                    res[stack.pop()] = i
+                stack.append(i)
+            return res
+
+        idxs = list(range(n))
+        next_higher = make_stack(sorted(idxs, key=lambda i: (arr[i], i)))
+        next_lower = make_stack(sorted(idxs, key=lambda i: (-arr[i], i)))
+
+        for i in range(n - 2, -1, -1):
+            nh = next_higher[i]
+            if nh is not None:
+                odd[i] = even[nh]
+            nl = next_lower[i]
+            if nl is not None:
+                even[i] = odd[nl]
+
+        return sum(odd)
