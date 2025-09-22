@@ -1,0 +1,27 @@
+from collections import defaultdict
+
+class Solution:
+    def calcEquation(self, equations, values, queries):
+        graph = defaultdict(list)
+        for (u, v), val in zip(equations, values):
+            graph[u].append((v, val))
+            graph[v].append((u, 1.0 / val))
+
+        def dfs(u, v, visited):
+            if u == v:
+                return 1.0
+            visited.add(u)
+            for nei, val in graph[u]:
+                if nei not in visited:
+                    res = dfs(nei, v, visited)
+                    if res != -1.0:
+                        return res * val
+            return -1.0
+
+        ans = []
+        for u, v in queries:
+            if u not in graph or v not in graph:
+                ans.append(-1.0)
+            else:
+                ans.append(dfs(u, v, set()))
+        return ans
