@@ -1,0 +1,104 @@
+Given the head of a linked list, return the list after sorting it in ascending order.
+
+ 
+
+Example 1:
+
+
+Input: head = [4,2,1,3]
+Output: [1,2,3,4]
+Example 2:
+
+
+Input: head = [-1,5,3,4,0]
+Output: [-1,0,3,4,5]
+Example 3:
+
+Input: head = []
+Output: []
+ 
+
+Constraints:
+
+The number of nodes in the list is in the range [0, 5 * 104].
+-105 <= Node.val <= 105
+
+SOLUTION:
+
+# Definition for singly-linked list.
+class ListNode:
+    def __init__(self, val=0, next=None):
+        self.val = val
+        self.next = next
+
+class Solution:
+    def sortList(self, head):
+        # base case
+        if head is None or head.next is None:
+            return head
+
+        # split list into two halves
+        slow, fast = head, head.next
+        while fast and fast.next:
+            slow = slow.next
+            fast = fast.next.next
+
+        mid = slow.next
+        slow.next = None
+
+        # sort each half
+        left = self.sortList(head)
+        right = self.sortList(mid)
+
+        # merge sorted halves
+        return self._merge(left, right)
+
+    def _merge(self, l1, l2):
+        dummy = ListNode()
+        tail = dummy
+        while l1 and l2:
+            if l1.val < l2.val:
+                tail.next = l1
+                l1 = l1.next
+            else:
+                tail.next = l2
+                l2 = l2.next
+            tail = tail.next
+        tail.next = l1 or l2
+        return dummy.next
+
+# Helper functions for testing
+def build_list(arr):
+    head = None
+    tail = None
+    for x in arr:
+        node = ListNode(x)
+        if head is None:
+            head = node
+            tail = node
+        else:
+            tail.next = node
+            tail = node
+    return head
+
+def to_list(head):
+    out = []
+    cur = head
+    while cur:
+        out.append(cur.val)
+        cur = cur.next
+    return out
+
+# Quick tests
+if __name__ == "__main__":
+    s = Solution()
+
+    head = build_list([4,2,1,3])
+    sorted_head = s.sortList(head)
+    print(to_list(sorted_head))  # -> [1,2,3,4]
+
+    head = build_list([-1,5,3,4,0])
+    print(to_list(s.sortList(head)))  # -> [-1,0,3,4,5]
+
+    head = build_list([])
+    print(to_list(s.sortList(head)))  # -> []
