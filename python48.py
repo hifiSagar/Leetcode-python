@@ -1,9 +1,10 @@
 class Solution:
-    def minimumTotal(self, triangle):
-        dp = triangle[-1][:]
-
-        for i in range(len(triangle) - 2, -1, -1):
-            for j in range(len(triangle[i])):
-                dp[j] = triangle[i][j] + min(dp[j], dp[j + 1])
-
-        return dp[0]
+    def maxProfit(self, prices):
+        buy = prices[0]
+        profit = 0
+        for i in range(1, len(prices)):
+            if prices[i] < buy:
+                buy = prices[i]
+            elif prices[i] - buy > profit:
+                profit = prices[i] - buy
+        return profit
