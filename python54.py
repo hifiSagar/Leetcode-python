@@ -1,42 +1,26 @@
-from collections import defaultdict
+from collections import deque
 
 class Solution(object):
-    def findLadders(self, beginWord, endWord, wordList):
+    def ladderLength(self, beginWord, endWord, wordList):
         wordSet = set(wordList)
+
         if endWord not in wordSet:
-            return []
+            return 0
 
-        parents = defaultdict(list)
-        level = {beginWord}
-        found = False
+        queue = deque([(beginWord, 1)])
 
-        while level and not found:
-            nextLevel = set()
-            wordSet -= level
+        while queue:
+            word, length = queue.popleft()
 
-            for word in level:
-                for i in range(len(word)):
-                    for c in "abcdefghijklmnopqrstuvwxyz":
-                        newWord = word[:i] + c + word[i+1:]
-                        if newWord in wordSet:
-                            parents[newWord].append(word)
-                            nextLevel.add(newWord)
-                            if newWord == endWord:
-                                found = True
+            if word == endWord:
+                return length
 
-            level = nextLevel
+            for i in range(len(word)):
+                for ch in "abcdefghijklmnopqrstuvwxyz":
+                    newWord = word[:i] + ch + word[i+1:]
 
-        if not found:
-            return []
+                    if newWord in wordSet:
+                        queue.append((newWord, length + 1))
+                        wordSet.remove(newWord)
 
-        res = []
-
-        def dfs(word, path):
-            if word == beginWord:
-                res.append(path[::-1])
-                return
-            for p in parents[word]:
-                dfs(p, path + [p])
-
-        dfs(endWord, [endWord])
-        return res
+        return 0
