@@ -1,23 +1,19 @@
 class Solution:
-    def minCut(self, s):
-        n = len(s)
+    def copyRandomList(self, head):
+        if not head:
+            return None
 
-        is_pal = [[False] * n for _ in range(n)]
+        old_to_new = {}
 
-        for end in range(n):
-            for start in range(end + 1):
-                if s[start] == s[end] and (end - start <= 2 or is_pal[start + 1][end - 1]):
-                    is_pal[start][end] = True
+        curr = head
+        while curr:
+            old_to_new[curr] = Node(curr.val)
+            curr = curr.next
 
-        dp = [0] * n
+        curr = head
+        while curr:
+            old_to_new[curr].next = old_to_new.get(curr.next)
+            old_to_new[curr].random = old_to_new.get(curr.random)
+            curr = curr.next
 
-        for i in range(n):
-            if is_pal[0][i]:
-                dp[i] = 0
-            else:
-                dp[i] = i
-                for j in range(i):
-                    if is_pal[j + 1][i]:
-                        dp[i] = min(dp[i], dp[j] + 1)
-
-        return dp[-1]
+        return old_to_new[head]
