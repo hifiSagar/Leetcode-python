@@ -1,19 +1,27 @@
-class Solution:
-    def copyRandomList(self, head):
-        if not head:
-            return None
+class Solution(object):
+    def wordBreak(self, s, wordDict):
+        wordSet = set(wordDict)
+        memo = {}
 
-        old_to_new = {}
+        def dfs(start):
+            if start in memo:
+                return memo[start]
 
-        curr = head
-        while curr:
-            old_to_new[curr] = Node(curr.val)
-            curr = curr.next
+            if start == len(s):
+                return [""]
 
-        curr = head
-        while curr:
-            old_to_new[curr].next = old_to_new.get(curr.next)
-            old_to_new[curr].random = old_to_new.get(curr.random)
-            curr = curr.next
+            res = []
 
-        return old_to_new[head]
+            for end in range(start + 1, len(s) + 1):
+                word = s[start:end]
+                if word in wordSet:
+                    for sentence in dfs(end):
+                        if sentence:
+                            res.append(word + " " + sentence)
+                        else:
+                            res.append(word)
+
+            memo[start] = res
+            return res
+
+        return dfs(0)
