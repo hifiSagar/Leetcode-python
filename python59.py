@@ -1,27 +1,16 @@
-class Solution(object):
-    def wordBreak(self, s, wordDict):
-        wordSet = set(wordDict)
-        memo = {}
+class Solution:
+    def detectCycle(self, head):
+        slow = head
+        fast = head
 
-        def dfs(start):
-            if start in memo:
-                return memo[start]
+        while fast and fast.next:
+            slow = slow.next
+            fast = fast.next.next
+            if slow == fast:
+                slow = head
+                while slow != fast:
+                    slow = slow.next
+                    fast = fast.next
+                return slow
 
-            if start == len(s):
-                return [""]
-
-            res = []
-
-            for end in range(start + 1, len(s) + 1):
-                word = s[start:end]
-                if word in wordSet:
-                    for sentence in dfs(end):
-                        if sentence:
-                            res.append(word + " " + sentence)
-                        else:
-                            res.append(word)
-
-            memo[start] = res
-            return res
-
-        return dfs(0)
+        return None
